@@ -1,3 +1,19 @@
+
+# download raw data from TBD
+```
+unzip X and put it into face_similarity_paper_2022 folder (or other folder name) into ExperimentalResults/
+```
+```
+unzip X and put it into face_similarity_paper_2022 folder (or other folder name) into ExperimentalResults/isotropicity/
+```
+
+# gitclone repo from github
+```
+go to https://github.com/kamilajozwik/face_similarity_paper_2022
+```
+```
+git clone git@github.com:kamilajozwik/face_similarity_paper_2022.git
+```
 # run code below
 ```
 be within face_similarity_paper_2022 folder in MATLAB (tested in MATLAB_R2021a but code shoudl work in earlier versions as well)
