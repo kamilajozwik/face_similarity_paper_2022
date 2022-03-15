@@ -119,54 +119,11 @@ mean_similarity_of_face_pair_corr = mean(similarity_of_face_pair_corr_pairwise_a
 %% Compute mean correlation between sessions
 % subject data is interleaved, which can be deducted from reading the
 % results, so we have subj1 sess1, subj 1 sess 2, subj2 sess 1 and subj2
-% sess 2, that is why we extrasct sesssion 1 and 2 taking every second
+% sess 2, that is why we extract session 1 and 2 taking every second
 % entry like below
 sess_1 = similarity_of_face_pair(1:2:end,:);
 sess_2 = similarity_of_face_pair(2:2:end,:);
 correlation_between_session_1_and_session_2_across_subjects = corr2(sess_1, sess_2);
-
-%% build RDM
-RDM = squareform(pdist(mean_similarity_of_face_pair'));
-
-showRDMs_mm(RDM);
-
-%% generate face pairs
-% neded to run it only one time
-% number_of_face_pairs = 232;
-% 
-% individual_face_image_path = 'stimuli/stimuli_main_expt/main_imgs_144px/';
-% 
-% 
-% for face_pair = 1: number_of_face_pairs
-% % for face_pair = 1:2
-%     
-% face_one = [individual_face_image_path '/pair_' num2str(face_pair) '_face1.jpg']
-% face_two =[individual_face_image_path '/pair_' num2str(face_pair) '_face2.jpg']
-% 
-% montage({face_one, face_two});
-% 
-% MyMontage = getframe(gca)
-% 
-% imwrite(MyMontage.cdata,['data/face_pair_images/pair_' num2str(face_pair,'%03.f'),'.tif'], 'tif');
-% 
-% 
-% % saveas(gcf, 'analysis/face_pair_images/pair.eps', 'epsc');
-% % saveas(gcf, ['analysis/face_pair_images/pair_' num2str(face_pair) '.png'], 'png');
-% 
-% end
-
-% %% arrange face pairs in one big montage
-% file_folder = 'data/face_pair_images/';
-% number_of_face_pairs = 232;
-% filenames_similarity = {};
-% for i = 1: length(order_similarity)
-%     filenames_similarity{i} = [file_folder,'/pair_' num2str(order_similarity(i),'%03.f') '.tif'];
-% end
-% 
-% figure;
-% montage(filenames_similarity(1:(number_of_face_pairs)), 'Size', [24,10]);
-% 
-% save_figure_kmj('analysis/montage_similarity');
 
 %% arrange face pairs in montage showing every 20 face pairs for similarity judgements
 number_of_face_pairs = 232;
@@ -180,25 +137,6 @@ end
 montage(filenames_similarity(1:20:number_of_face_pairs), 'Size', [12,1]);
 
 save_figure_kmj('analysis/face_ranking/face_similarity_ranking_every_20');
-
-% %% arrange face pairs in montage showing every 20 face pairs for VGG face UNWEIGHTED
-% 
-% VGG_face_distances = csvread('data/from_kate/model_predicted_face_pair_distances/VGG-face.csv');
-% 
-% 
-% [~, order_VGG_face] = sort(VGG_face_distances);
-% 
-% number_of_face_pairs = 232;
-% file_folder = 'data/face_pair_images/';
-% filenames_VGG_face = {};
-% for i = 1: length(order_VGG_face)
-%     filenames_VGG_face{i} = [file_folder,'/pair_' num2str(order_VGG_face(i),'%03.f') '.tif'];
-% end
-% 
-% figure;
-% montage(filenames_VGG_face(1:20:number_of_face_pairs), 'Size', [12,1]);
-% 
-% save_figure_kmj('analysis/face_ranking/VGG_face_ranking_every_20');
 
 %% save kate's stimuli as pngs
 file_folder_kate = 'data/from_kate/facepair_info_144px_main_expt_KSscript/';
@@ -231,8 +169,6 @@ for i = 1: length(order_similarity)
 end
 
 figure;
-% montage(filenames_similarity_kate(1:(number_of_face_pairs)), 'Size', [24,10]);
-% montage(filenames_similarity_kate(fliplr(1:(number_of_face_pairs))), 'Size', [13,18]);
 montage(filenames_similarity_kate(fliplr(1:(number_of_face_pairs))), 'Size', [20, 12]);
 
 save_figure_kmj('analysis/montage_similarity_kate_face_pairs');
@@ -338,20 +274,13 @@ SEM = std(all_separators)/sqrt(length(all_separators));% Standard Error
 ts = tinv([0.05  0.95],length(all_separators)-1);      % T-Score
 CI = mean(all_separators) + ts*SEM                     % 
 
-%% test whether Kate's simulation values and identity separator line placement are significantly different
-% (two-tailed independent-samples t-test = XX.XX)
-
-
 %% plot identity separator on data
 close all;
 figure('Name', 'Face similarity as a function of Basel Face Space');
 sigmoid_bfs_distance = linear_distance_fit(all_sessions);
 plot(all_eu_distances, all_similarities, 'ro','MarkerSize',2);
 hold on;
-% plot(all_eu_distances,mean_identity_separator, 'b');
-% yline(mean_identity_separator);
 mean_identity_separator_repeated = repelem(mean_identity_separator, length(all_eu_distances))
-% plot(all_eu_distances,mean_identity_separator_repeated, 'b.', 'MarkerSize',20);
 line([0 80], [mean_identity_separator mean_identity_separator]); 
 hold on;
 line([0 80], [mean_identity_separator+stderror_identity_separator mean_identity_separator+stderror_identity_separator]);
@@ -433,12 +362,6 @@ Y(indeces_mean_similarities_below_identity_line)=1;
 Y(indeces_mean_similarities_above_identity_line)=2;
 
 [dprime, AUC] = dprime_and_roc(X, Y)
-% run logistic regression
-% [Mdl, Fitinfo] = fitclinear(X',Y, 'Kfold',5); % returns a trained linear classification model object Mdl that contains the results of fitting a binary support vector machine to the predictors X and class labels Y.
-% [Mdl] = fitclinear(X',Y); % returns a trained linear classification model object Mdl that contains the results of fitting a binary support vector machine to the predictors X and class labels Y.
-
-% AUC (area under the ROC curve)
-
 
 %% logistic regression and dprime (based on individual subjects data)
 number_of_subjects = 26;
@@ -504,9 +427,6 @@ for s = 1:number_of_subjects
     if do_plot; save_figure_kmj(['analysis/AUC/roc_curves/theta/subj' num2str(s,'%02d') '.png']); end
     [dprimes_abs_r1_r2(s), AUC_abs_r1_r2(s)] = dprime_and_roc(abs(pairs_r1(s,:)-pairs_r2(s,:))', pairs_labels(s,:)', do_plot);
     if do_plot; save_figure_kmj(['analysis/AUC/roc_curves/absolute_difference/subj' num2str(s,'%02d') '.png']); end
-%     [dprime, AUC] = dprime_and_roc(abs(pairs_r1-pairs_r2)', pairs_labels')
-    
-%     sim = [similarity_of_face_pair(2*s-1, :), similarity_of_face_pair(2*s, :)];
 end
 
 %% isotropicity across two sessions, same stimulus set
@@ -888,93 +808,6 @@ significant_difference_mean_r1_r2_below_above_identity_line = ttest2(mean_mean_r
 
 sign_diff_abs_differnece_r1_r2_below_above_identity_line = ttest2(abs_difference_r1_r2_below_identity_line, abs_difference_r1_r2_above_identity_line);
 
-% %% compare topo and non-topo models to face similarity judgements
-% base = h5read('topography_and_scaling/data/Kamila_image_sets/464/activations/alexnet_trainval0_fc6_4096_fc7_4096_2018-06-17-232415/alexnet_trainval0_fc6_4096_fc7_4096_2018-06-17-232415_step_450000.h5', '/val/fc6/fc/relu')';
-% topo = h5read('topography_and_scaling/data/Kamila_image_sets/464/activations/alexnet_trainval0_sclfc6fc7_lw10_noabs_fc6_4096_fc7_4096_2018-06-17-232537/alexnet_trainval0_sclfc6fc7_lw10_noabs_fc6_4096_fc7_4096_2018-06-17-232537_step_450000.h5', '/val/fc6/fc/relu')';
-
-% base_pair_distance = [];
-% for i = 1:232
-%     base_pair_distance(i) = dist(base(2*i-1,:), base(2*i,:)');
-% end
-
-% base_RDM = pdist(base_pair_distance');
-
-% [~, order_base] = sort(base_pair_distance);
-
-% topo_pair_distance = [];
-% for j = 1:232
-%     topo_pair_distance(j) = dist(topo(2*j-1,:), topo(2*j,:)');
-% end
-
-% topo_RDM = pdist(topo_pair_distance');
-
-% [~, order_topo] = sort(topo_pair_distance);
-
-% similarity = mean_similarity_of_face_pair;
-
-% similarity_RDM = pdist(similarity');
-
-% correlation_base = corr2(similarity_RDM, base_RDM);
-
-
-% correlation_topo = corr2(similarity_RDM, topo_RDM);
-% %%
-% close all
-
-% figure;
-
-% model_correlations = [correlation_base, correlation_topo];
-
-% bar(model_correlations);
-
-% set(gca,'FontName','Arial','TickLength',[0 0],'XTick',...
-%     [1:length(model_correlations)],'XTickLabel',... 
-%     {'AlexNet base', 'AlexNet topo'}, 'XTickLabelRotation',45);
-
-% ylabel('Correlation', 'FontName','Arial');
-
-% set(gca,'box', 'off');
-
-% ylim([0, 1]);
-
-% ax = gca; ax.XAxis.FontSize = 15; ax.YAxis.FontSize = 15;
-
-% save_figure_kmj('analysis/model_comparison', figure(1));
-
-
-
-% %% montage base
-% number_of_face_pairs = 232;
-% file_folder = 'analysis/face_pair_images';
-% filenames_base = {};
-% for i = 1: length(order)
-%     filenames_base{i} = [file_folder,'/pair_' num2str(order(i),'%03.f') '.tif'];
-% end
-% 
-% % montage(file_names(1:(number_of_face_pairs)), 'Size', [(number_of_face_pairs) 1]);
-% montage(filenames_base(1:(number_of_face_pairs)), 'Size', [24,10]);
-% 
-% % montage(file_names(1:20), 'Size', [20 1]);
-% % saveas(gcf, 'analysis/face_pair_stimuli.eps', 'epsc');
-% 
-% save_figure_kmj('analysis/montage_base');
-% 
-% %% montage topo
-% number_of_face_pairs = 232;
-% file_folder = 'analysis/face_pair_images';
-% filenames_base = {};
-% for i = 1: length(order)
-%     filenames_topo{i} = [file_folder,'/pair_' num2str(order_topo(i),'%03.f') '.tif'];
-% end
-% 
-% % montage(file_names(1:(number_of_face_pairs)), 'Size', [(number_of_face_pairs) 1]);
-% montage(filenames_topo(1:(number_of_face_pairs)), 'Size', [24,10]);
-% 
-% % montage(file_names(1:20), 'Size', [20 1]);
-% % saveas(gcf, 'analysis/face_pair_stimuli.eps', 'epsc');
-% 
-% save_figure_kmj('analysis/montage_topo');
-
 %% (1) plot the similarity judgments
 %% as a function of Euclidean distance
 %% group
@@ -1034,60 +867,7 @@ for i = 1:length(all_subjects)
 end
 mtit(gcf,'Face similarity as a function of R1, R2 and theta')
 
-%% for each theta bin, plot an R1-by-R2 matrix colour-coding perceptual distance (interpolated from the data)  
-% %% group
-% figure ('Name','R1-by-R2 matrix for each theta bin');
-% i = 0;
-% 
-% for theta = unique(all_theta)
-%     i = i + 1;
-%     subplot(3, 3, i);
-%     plot_r1r2matrix(all_r1, all_r2, all_theta, all_similarities, theta);
-%     xlabel('R1');
-%     ylabel('R2');
-%     title(['theta = ',num2str(theta)]);
-% end
-% p = mtit(gcf,'R1-by-R2 matrix for each theta bin');
-% set(p.th,'Position',[0.5 1.03]);
 
-% %% display values of R1 R2 thera with Euclidean distance
-% unique_theta=unique(all_theta)
-% unique_r1=unique(all_r1)
-% unique_r2=unique(all_r2)
-% unique_eu_distances=unique(all_eu_distances)
-% 
-% figure;
-% i = 0;
-% % [x,y,z] = peaks(10);
-% [r1,r2]=meshgrid(linspace(0,40,8));
-% for theta_deg = unique_theta
-%     i = i + 1;
-%     subplot(2, 4, i);
-%     eu_d = sqrt(r1.^2 + r2.^2 - 2*r1.*r2*cosd(theta_deg));
-%     surf(r1,r2,eu_d);
-%     axis('square');
-%     view(2);
-%     xticks([0 20 40])
-%     xticklabels({'0', '20', '40'})
-%     yticks([0 20 40])
-%     yticklabels({'0', '20', '40'})
-%     a = get(gca,'XTickLabel');  
-%     set(gca,'XTickLabel',a,'fontsize',18,'FontName', 'Arial')
-%     xlabel('r_1','FontSize', 26, 'FontName', 'Arial');
-%     ylabel('r_2','FontSize', 26, 'FontName', 'Arial');
-%     title(['\theta = ',num2str(round(theta_deg,2))], 'FontWeight', 'normal','FontSize', 26, 'FontName', 'Arial');
-%     caxis([0 80]);
-%    if i>1
-%     axis off;
-%    end
-% end
-% set(gcf, 'Position',  [100, 100, 1300, 500])
-% % 
-% hp4 = get(subplot(2,4,8),'Position')
-% c = colorbar('Position', [hp4(1)+hp4(3)+0.04  hp4(2)  0.01  hp4(2)+hp4(4)*2.1], 'FontSize', 20, 'FontName', 'Arial')
-% c.Label; c.Label.String = 'BFM Euclidean distance'; c.Label.FontSize =26; c.Label.FontName = 'Arial';
-% save_figure_kmj('analysis/face_sampling_r1_r2_theta/face_sampling_r1_r2_theta');
-% 
 %% each subject
 figure ('Name','R1-by-R2 matrix for each theta bin for each subject');
 hold on;
@@ -1181,38 +961,6 @@ xticks(0:10:80)
 ax = gca; ax.XAxis.FontSize = 20; ax.YAxis.FontSize = 20;
 
 save_figure_kmj('analysis/linear_and_sigmoidal_model_fit_over_mean_data', figure(1));
-
-%% plot igmoid BFS distance on the data with identity line
-
-% %% plot sigmoid BFS distance on the data with identity line with confidence intervals
-% 
-% close all;
-% figure;
-% mean_identity_separator_repeated = repelem(mean_identity_separator, length(all_eu_distances))
-% CI_lower_repeated = repelem(CI(1), length(all_eu_distances))
-% CI_higher_repeated = repelem(CI(2), length(all_eu_distances))
-% hold on;
-% sigmoid_bfs_distance = sigmoid_distance_fit(all_sessions);
-% plot(all_eu_distances, all_similarities, 'ro','MarkerSize',2);
-% hold on;
-% 
-% dark_green_colour = [0/255, 176/255, 80/255];
-% % plot([0:length(mean_identity_separator_repeated)-1],mean_identity_separator_repeated, 'color',dark_green_colour, 'LineWidth',4);
-% plot([0:length(mean_identity_separator_repeated)-1],CI_lower_repeated, 'color',dark_green_colour, 'LineWidth',1);
-% plot([0:length(mean_identity_separator_repeated)-1],CI_higher_repeated, 'color',dark_green_colour, 'LineWidth',1);
-% 
-% plot_1d(sigmoid_bfs_distance, '', 'k');
-% 
-% xlabel('BFM Euclidean distance');
-% ylabel('Facial dissimilarity judgements');
-% 
-% set(gca,'box', 'off');
-% xlim([-0.2 80]);
-% xticks(0:10:80)
-% 
-% ax = gca; ax.XAxis.FontSize = 20; ax.YAxis.FontSize = 20;
-% 
-% save_figure_kmj('analysis/identity_separator_with_sigmoidal_model_fit_over_data_CI', figure(1));
 
 %% plot sigmoid BFS distance on the data with identity line with standard error 
 
@@ -1338,28 +1086,6 @@ ax = gca; ax.XAxis.FontSize = 20; ax.YAxis.FontSize = 20;
 
 save_figure_kmj('analysis/identity_separator_with_linear_and_sigmoidal_model_fit_over_mean_data', figure(1));
 
-
-%% sigmoid BFS theta: 2D test (summing r1 and r2 into one variable)
-% sigmoid_bfs_theta_2d = sigmoid_2d_theta_fit(all_sessions);
-% 
-% hold on;
-% plot3(all_r1 + all_r2, all_theta, all_similarities, '.r');
-% [X,Y] = meshgrid(0:1:80, 0:10:180);
-% for i = 1:size(X, 1)
-%     for j = 1:size(X, 2)
-%         Z(i, j) = sigmoid_bfs_theta_2d(X(i, j), Y(i, j));
-%     end 
-% end
-% surf(X, Y, Z);
-% view([1 -2.2 1]);
-
-%% sigmoid BFS theta
-%sigmoid_bfs_theta = sigmoid_theta_fit(all_sessions);
-
-%% linear BFS theta
-%linear_bfs_theta = linear_theta_fit(all_sessions);
-
-
 %% gaussian-tuned exemplar code 
 %% simpler closed-form models 
 
@@ -1389,12 +1115,6 @@ save_figure_kmj('analysis/identity_separator_with_linear_and_sigmoidal_model_fit
 models = [
     struct('name', 'Sigmoid BFS distance',  'fit', @sigmoid_distance_fit,   'extract', @extract_eu_distance)
     struct('name', 'Linear BFS distance',   'fit', @linear_distance_fit,    'extract', @extract_eu_distance)
-%     struct('name', 'k nearest BFS distance','fit', @k_nearest_distance_fit, 'extract', @extract_eu_distance)
-%     struct('name', 'Sigmoid BFS theta 2D',  'fit', @sigmoid_2d_theta_fit,   'extract', @extract_r1r2theta)
-%     struct('name', 'Sigmoid BFS theta',     'fit', @sigmoid_theta_fit,      'extract', @extract_r1r2theta)
-%     struct('name', 'Linear BFS theta',      'fit', @linear_theta_fit,       'extract', @extract_r1r2theta)
-%     struct('name', 'k nearest BFS theta',   'fit', @k_nearest_theta_fit,    'extract', @extract_r1r2theta)
-%     struct('name', 'other half of each subject''s data', 'fit', ???)
 ];
 
 across_sessions = zeros(length(all_subjects), length(models));
@@ -1623,17 +1343,6 @@ ax.YAxis.Exponent = 0
 % xtickformat('%.0f')
 
 save_figure_kmj('analysis/uniformity_test/correlation_theta_dissim_bins')
-    
-    
-% %% save all figures
-% 
-% % delete('figures/all.ps');
-% for fig = findall(0,'Type','figure')'
-%    name = get(fig, 'Name');
-%    saveas(fig, ['figures/' name], 'tiff');
-%    print(fig, '-dpsc2','-r300','-append','figures/all');
-% end
-
- 
+     
 
 

@@ -1,3 +1,5 @@
+## run code below from within face_similarity_paper_2022 folder in MATLAB (tested in MATLAB_R2021a but code shoudl work in earlier versions as well)
+
 ## to extract data
 ```
 extract_results

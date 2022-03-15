@@ -99,39 +99,8 @@ end
 similarity_of_face_pair_corr_pairwise_across_subjects_iso = corr(similarity_of_face_pair_iso');
 mean_similarity_of_face_pair_corr_iso = mean(similarity_of_face_pair_corr_pairwise_across_subjects_iso(:));
 
-%% build RDM
-% RDM = squareform(pdist(mean_similarity_of_face_pair'));
-% 
-% showRDMs_mm(RDM);
-
-% %% generate face pairs
-% % neded to run it only one time
-% number_of_face_pairs = 232;
-% 
-% individual_face_image_path = 'stimuli/stimuli_iso_expt/iso_imgs/';
-% 
-% 
-% for face_pair = 1: number_of_face_pairs
-% % for face_pair = 1:2
-%     
-% face_one = [individual_face_image_path '/pair_' num2str(face_pair) '_face1.jpg']
-% face_two =[individual_face_image_path '/pair_' num2str(face_pair) '_face2.jpg']
-% 
-% montage({face_one, face_two});
-% 
-% MyMontage = getframe(gca)
-% 
-% imwrite(MyMontage.cdata,['data/face_pair_images_iso/pair_' num2str(face_pair,'%03.f'),'.tif'], 'tif');
-% 
-% 
-% % saveas(gcf, 'analysis/face_pair_images_iso/pair.eps', 'epsc');
-% % saveas(gcf, ['analysis/face_pair_images_iso/pair_' num2str(face_pair) '.png'], 'png');
-% 
-% end
 
 %% get necessary data
-% file_folder = 'data/face_pair_images_iso/';
-% file_folder_kate = 'data/from_kate/facepair_info_144px_isotropicity_expt/';
 file_folder_kate = 'data/from_kate/facepair_info_144px_isotropicity_expt_pairs_png';
 number_of_face_pairs = 232;
 filenames_similarity = {};
@@ -181,8 +150,6 @@ for i = 1: length(order_similarity)
 end
 
 figure;
-% montage(filenames_similarity_kate(1:(number_of_face_pairs)), 'Size', [24,10]);
-% montage(filenames_similarity_kate(fliplr(1:(number_of_face_pairs))), 'Size', [13,18]);
 montage(filenames_similarity_kate(fliplr(1:(number_of_face_pairs))), 'Size', [20, 12]);
 
 save_figure_kmj('analysis/montage_similarity_iso_kate_face_pairs');
@@ -329,17 +296,6 @@ mean_mean_r1_r2_below_identity_line_iso = (mean_r1_below_identity_line_iso+mean_
 abs_difference_r1_r2_above_identity_line_iso = abs(mean_r1_above_identity_line_iso-mean_r2_above_identity_line_iso);
 
 abs_difference_r1_r2_below_identity_line_iso = abs(mean_r1_below_identity_line_iso-mean_r2_below_identity_line_iso);
-
-
-% %% find indeces of face pairs where r1 and r2 were the largest
-% [indeces_mean_r1_below_identity_line_value_40_iso]=find(mean_r1_iso_below_identity_line==40);
-% 
-% [indeces_mean_r2_below_identity_line_value_40_iso]=find(mean_r2_iso_below_identity_line==40);
-% 
-% intersect_r1_r2_value_40_below_idnetity_line_iso = intersect(indeces_mean_r1_below_identity_line_value_40_iso, indeces_mean_r2_below_identity_line_value_40_iso);
-% 
-% save_mat_kmj('analysis/intersect_r1_r2_value_40_below_idnetity_line_iso.mat', 'intersect_r1_r2_value_40_below_idnetity_line_iso')
-
 %% logistic regression and dprime (based on mean data)
 
 % create input to logistic regression
@@ -349,14 +305,7 @@ Y_iso = nan(232,1);
 Y_iso(indeces_mean_similarities_below_identity_line_iso)=1;
 Y_iso(indeces_mean_similarities_above_identity_line_iso)=2;
 
-% [dprime_iso, AU_isoC] = dprime_and_roc(X, Y)
 [dprime_iso, AU_isoC] = dprime_and_roc(X_iso, Y_iso)
-% run logistic regression
-% [Mdl, Fitinfo] = fitclinear(X',Y, 'Kfold',5); % returns a trained linear classification model object Mdl that contains the results of fitting a binary support vector machine to the predictors X and class labels Y.
-% [Mdl] = fitclinear(X',Y); % returns a trained linear classification model object Mdl that contains the results of fitting a binary support vector machine to the predictors X and class labels Y.
-
-% AUC (area under the ROC curve)
-
 
 %% logistic regression and dprime (based on individual subjects data)
 
@@ -417,9 +366,6 @@ for s = 1:number_of_subjects_iso
     [dprimes_eu_d_iso(s), AUC_eu_d_iso(s)] = dprime_and_roc(pairs_eu_distances_iso(s,:)', pairs_labels_iso(s,:)');
     [dprimes_theta_iso(s), AUC_theta_iso(s)] = dprime_and_roc(pairs_thetas_iso(s,:)', pairs_labels_iso(s,:)');
     [dprimes_abs_r1_r2_iso(s), AUC_abs_r1_r2_iso(s)] = dprime_and_roc(abs(pairs_r1_iso(s,:)-pairs_r2_iso(s,:))', pairs_labels_iso(s,:)');
-%     [dprime, AUC] = dprime_and_roc(abs(pairs_r1-pairs_r2)', pairs_labels')
-    
-%     sim = [similarity_of_face_pair(2*s-1, :), similarity_of_face_pair(2*s, :)];
 end
 
 indeces_theta_180_iso = find(all_theta_iso ==180 & all_r1_iso ==0 | all_r2_iso ==0)
@@ -741,9 +687,6 @@ save_figure_kmj('analysis/histograms/hist_r2_distribution_iso', figure(1));
 SEM = std(all_separators_iso)/sqrt(length(all_separators_iso));% Standard Error
 ts = tinv([0.05  0.95],length(all_separators_iso)-1);      % T-Score
 CI = mean(all_separators_iso) + ts*SEM     
-
-%% test whether Kate's simulation values and identity separator line placement are significantly different
-% (two-tailed independent-samples t-test = XX.XX)
 
 %% %%%%%%%%%%%%%% MODELS %%%%%%%%%%%%%%%%%%%%%%
 %% sigmoid BFS distance and inverse
@@ -1122,13 +1065,6 @@ end
 %% (1) plot the similarity judgments
 %% as a function of Euclidean distance
 %% group
-
-% figure('Name', 'Face similarity as a function of Basel Face Space');
-% plot(all_eu_no_iso, all_similarities_no_iso, 'ro','MarkerSize',2);
-% title('Face similarity as a function of Basel Face Space');
-% xlabel('Euclidean distance');
-% ylabel('Similarity judgements');
-
 %% each subject
 
 figure('Name', 'Face similarity as a function of Basel Face Space for each subject');
@@ -1248,15 +1184,7 @@ AllDisAvg = AllAvg(:,5);
 %% Pearson and errors
 pearson_error=zeros(length(all_subjects)+1,7);
 
-for s = 1: length(all_subjects)
-%     figure;
-%     hold on;
-%     plot(all_subjects(s).similarities(1,:)', 'ro', 'markersize',5);
-%     plot(all_subjects(s).similarities(2,:)', 'bo', 'markersize',5);
-%     plot(all_subjects(s).similarities(3,:)', 'go', 'markersize',5);
-%     x = 1:232;
-%     plot([x; x], [min(all_subjects(s).similarities); max(all_subjects(s).similarities)], '-k');
-    
+for s = 1: length(all_subjects)    
     pearson_error(s,1:6) = calculate_pearson_error(all_subjects(s).similarities);
     
     A = all_subjects(s).similarities(1, :)';
@@ -1308,48 +1236,12 @@ plot(AllIsoDisAvg,'bo', 'markersize',5);
 x = 1:232;
 plot([x; x], [AllDisAvg'; AllIsoDisAvg'], '-k');
 
-%addHeadingAndPrint('IsotropicityComparision', 'figures/Isotropicity/IsotropicityComparision');
-%plot(abs(AllDisAvg-AllIsoDisAvg), 'k*');
-
-
 %% prediction error
 
 errorForIso(AllDisAvg, AllIsoDisAvg)
 
 pearson(AllDisAvg, AllIsoDisAvg)
 
-%% anisotropicity
-% to test for anisotropicity, we need to compare within each subject, 
-% whether a direct replication of the measurement for the same two face images is more consistent 
-% that a replication for a different direction in BFS.
-% in a "load_all_subjects" script create a separate struct for session 1
-% and session 2
-% variables needed: all_similarities_iso, all_similarities_session_1,
-% all_similarities_session_2
-%% prediction error and pearson correlation
-%% average
-
-% pearson(all_similarities_iso, all_similarities_session_1) 
-% pearson(all_similarities_iso, all_similarities_session_2) 
-% pearson(all_similarities_session_1, all_similarities_session_2)
-% 
-% errorForIso(all_similarities_iso, all_similarities_session_1)
-% errorForIso(all_similarities_iso, all_similarities_session_2)
-% errorForIso(all_similarities_session_1, all_similarities_session_2)
-% 
-% %% each subject
-% %adapt that for loop for what we want
-% figure('Name', 'Face similarity as a function of Basel Face Space for each subject');
-% 
-% hold on;
-% 
-% for i = 1:length(all_subjects_no_iso)
-% end
-% mtit(gcf, 'Face similarity as a function of Basel Face Space')
-% 
-% %% write_as_tsv
-% 
-% write_as_tsv( filename, data, column_headers, row_headers )
 
 %% (4) inferentially compare the models
 % for each subject
@@ -1363,12 +1255,6 @@ pearson(AllDisAvg, AllIsoDisAvg)
 models = [
     struct('name', 'Sigmoid BFS distance',  'fit', @sigmoid_distance_fit,   'extract', @extract_eu_distance)
     struct('name', 'Linear BFS distance',   'fit', @linear_distance_fit,    'extract', @extract_eu_distance)
-%     struct('name', 'k nearest BFS distance','fit', @k_nearest_distance_fit, 'extract', @extract_eu_distance)
-%     struct('name', 'Sigmoid BFS theta 2D',  'fit', @sigmoid_2d_theta_fit,   'extract', @extract_r1r2theta)
-%     struct('name', 'Sigmoid BFS theta',     'fit', @sigmoid_theta_fit,      'extract', @extract_r1r2theta)
-%     struct('name', 'Linear BFS theta',      'fit', @linear_theta_fit,       'extract', @extract_r1r2theta)
-%     struct('name', 'k nearest BFS theta',   'fit', @k_nearest_theta_fit,    'extract', @extract_r1r2theta)
-%     struct('name', 'other half of each subject''s data', 'fit', ???)
 ];
 
 across_sessions = zeros(length(all_subjects), length(models));
