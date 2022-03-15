@@ -11,6 +11,7 @@
 *.tsv
 *.xlsx
 *.xls
+*DS_Store
 ExperimentalResults/
 stimuli/
 various/
