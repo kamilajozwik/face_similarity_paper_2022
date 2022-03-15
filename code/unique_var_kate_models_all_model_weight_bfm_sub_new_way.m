@@ -31,7 +31,6 @@ number_of_subjects = size(similarity_of_face_pair_two_sessions,1);
 clear semipartial_betas add_var_expl total_var_expl var_expl
 for subj = 1:number_of_subjects
     subj
-%     [semipartial_betas(subj,:), add_var_expl(subj,:), total_var_expl(subj,:)] = fit_glms_no_time_dim(designMat,similarity_of_face_pair_two_sessions(subj,:));
     dat = similarity_of_face_pair_two_sessions(subj,:);
     [semipartial_betas(subj,:), add_var_expl(subj,:), total_var_expl(subj,:), var_expl(subj, :)] = fit_glms(designMat,dat);
    
@@ -39,5 +38,4 @@ end
 
 %%
 output_folder = 'analysis/variance/all_model_weights/BFM_submodels/';
-% plot_variance_results(add_var_expl, model_names, output_folder);
 plot_variance_results(total_var_expl, var_expl, add_var_expl, model_names, output_folder);

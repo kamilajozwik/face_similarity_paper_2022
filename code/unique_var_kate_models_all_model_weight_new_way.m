@@ -3,13 +3,6 @@ model_names_for_read_csv = {'VGG-Face_best_layer', 'AAM',  'VGG-BFM-identity_bes
 % fot plotting
 model_names = {'VGG-Face best layer', 'Active Appearance Model',  'VGG-BFM-identity best layer','VGG-BFM-latents best layer', 'Alexnet best layer', 'VGG-Object best layer', 'GIST', 'BFM','HMAX best layer', 'Eigenface',  'Pixel',    'Configural 0th',  '3D mesh', 'Configural 1st', 'BFM-angle', 'Configural 2nd'}; 
 
-
-
-% % older plotting
-% model_names_for_read_csv = {'01_VGG-Face_best','17_VGG-BFM-id-224_best','16_VGG-BFM-id-128_best', '18_VGG-BFM-128-cropped_best', '02_Alexnet_best', '03_GIST', '04_VGG-Object_best', '05_BFM', '06_BFM-shape', '07_BFM-texture', '08_HMAX_best', '09_pixel', '10_config_0th', '11_mesh', '12_config_1st', '13_config_2nd',  '14_BFM-angle', '15_person_attributes'};
-% % fot plotting
-% model_names = {'VGG-Face best', 'VGG-BFM identity best 224','VGG-BFM identity best 128', 'VGG-BFM latent best 128','Alexnet best','GIST', 'VGG-Object best', 'BFM','BFM-shape', 'BFM-texture','HMAX best',  'pixel',    'config 0th',  'mesh', 'config 1st', 'config 2nd', 'BFM-angle','person attributes'}; 
-
 number_of_models = size(model_names_for_read_csv,2);
 
 model = [];
@@ -39,7 +32,6 @@ number_of_subjects = size(similarity_of_face_pair_two_sessions,1);
 clear semipartial_betas add_var_expl total_var_expl var_expl
 for subj = 1:number_of_subjects
     subj
-%     [semipartial_betas(subj,:), add_var_expl(subj,:), total_var_expl(subj,:)] = fit_glms_no_time_dim(designMat,similarity_of_face_pair_two_sessions(subj,:));
     dat = similarity_of_face_pair_two_sessions(subj,:);
     [semipartial_betas(subj,:), add_var_expl(subj,:), total_var_expl(subj,:), var_expl(subj, :)] = fit_glms(designMat,dat);
    
