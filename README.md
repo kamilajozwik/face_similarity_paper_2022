@@ -1,13 +1,13 @@
 
-# download raw data from TBD
+# download raw data from https://osf.io/7bh6s/
 ```
-unzip X and put it into face_similarity_paper_2022 folder (or other folder name) into ExperimentalResults/
+unzip "main" and put it into face_similarity_paper_2022 folder (or other folder name) into ExperimentalResults/
 ```
 ```
-unzip X and put it into face_similarity_paper_2022 folder (or other folder name) into ExperimentalResults/isotropicity/
+unzip "isotropicity" and put it into face_similarity_paper_2022 folder (or other folder name) into ExperimentalResults/isotropicity/
 ```
 
-# gitclone repo from github
+# gitclone repo from GitHub
 ```
 go to https://github.com/kamilajozwik/face_similarity_paper_2022
 ```
@@ -16,7 +16,7 @@ git clone git@github.com:kamilajozwik/face_similarity_paper_2022.git
 ```
 # run code below
 ```
-be within face_similarity_paper_2022 folder in MATLAB (tested in MATLAB_R2021a but code shoudl work in earlier versions as well)
+be within face_similarity_paper_2022 folder in MATLAB (tested in MATLAB_R2021a but code should work in earlier versions as well)
 ```
 # to extract data
 ```
@@ -76,11 +76,11 @@ MasterScriptFaceSimilarityIsotropicity
 ```
 ## Figure 4c
 ```
-unique_var_kate_models_all_model_weight
-unique_var_kate_models_alexnet_weight_iso
+unique_var_kate_models_all_model_weight_new_way
+unique_var_kate_models_all_model_weight_iso_new_way
 ```
 
-# to generate figures in the supplementary manuscript
+# to generate figures in the supplementary materials
 ## Supplementary Figure 1
 ```
 MasterScriptFaceSimilarity
