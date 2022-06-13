@@ -1,5 +1,5 @@
 
-all_subjects = load_all_subjects('ExperimentalResults/');
+all_subjects = load_all_subjects('ExperimentalResults/main/');
 all_sessions = [all_subjects.sessions_combined];
 [all_r1, all_r2, all_theta, all_eu_distances, all_similarities, all_separators, all_pair_ids] = extract_results(all_sessions);
 
