@@ -8,11 +8,21 @@ git clone git@github.com:kamilajozwik/face_similarity_paper_2022.git
 Or download and unzip this repository, naming its root directory `face_similarity_paper_2022`.
 
 # download raw data from https://osf.io/7bh6s/
+Human data for Stimulus Set A:
 ```
 unzip "main" and put it into face_similarity_paper_2022/ExperimentalResults/main/
 ```
+Human data for Stimulus Set B:
 ```
 unzip "isotropicity" and put it into face_similarity_paper_2022/ExperimentalResults/isotropicity/
+```
+Model predictions for Stimulus Set A:
+```
+unzip "model_predictions_setA" and put it into face_similarity_paper_2022/data/model_predictions_setA
+```
+Model predictions for Stimulus Set B:
+```
+unzip "model_predictions_setB" and put it into face_similarity_paper_2022/data/model_predictions_setB
 ```
 
 # run MATLAB scripts below
@@ -25,8 +35,23 @@ extract_data_similarity_iso
 ```
 
 # to generate figures in the main manuscript
-For each of these, open the specified script found within `face_similarity_paper_2022/code/`, and run the cell with the specified title ("%% ...").
+For each of these, open the specified script found within `face_similarity_paper_2022/code/`, and run the cell with the specified title (`"%% ..."`), after first running any preliminary data-processing cells titled `"%% PRELIM: ..."`.
 
+## Figure 2a
+```
+per_model_3D_barplots
+%% BFM Euclidean distance (Figure 2A)
+```
+## Figure 2b, top
+```
+per_model_3D_barplots
+%% Human perceived dissimilarity (Figure 2B, top)
+```
+## Figure 2b, bottom
+```
+per_model_3D_barplots_setB
+%% Human perceived dissimilarity (Figure 2B, bottom)
+```
 ## Figure 2c
 ```
 MasterScriptFaceSimilarity
