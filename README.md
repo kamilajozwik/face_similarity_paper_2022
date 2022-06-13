@@ -9,7 +9,7 @@ Or download and unzip this repository, naming its root directory `face_similarit
 
 # download raw data from https://osf.io/7bh6s/
 ```
-unzip "main" and put it into face_similarity_paper_2022/ExperimentalResults/main
+unzip "main" and put it into face_similarity_paper_2022/ExperimentalResults/main/
 ```
 ```
 unzip "isotropicity" and put it into face_similarity_paper_2022/ExperimentalResults/isotropicity/
