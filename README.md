@@ -25,6 +25,8 @@ extract_data_similarity_iso
 ```
 
 # to generate figures in the main manuscript
+For each of these, open the specified script found within `face_similarity_paper_2022/code/`, and run the cell with the specified title ("%% ...").
+
 ## Figure 2c
 ```
 MasterScriptFaceSimilarity
