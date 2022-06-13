@@ -1,23 +1,23 @@
-
-# download raw data from https://osf.io/7bh6s/
-```
-unzip "main" and put it into face_similarity_paper_2022 folder (or other folder name) into ExperimentalResults/
-```
-```
-unzip "isotropicity" and put it into face_similarity_paper_2022 folder (or other folder name) into ExperimentalResults/isotropicity/
-```
-
-# gitclone repo from GitHub
+# clone this repository from GitHub
 ```
 go to https://github.com/kamilajozwik/face_similarity_paper_2022
 ```
 ```
 git clone git@github.com:kamilajozwik/face_similarity_paper_2022.git
 ```
-# run code below
+Or download and unzip this repository, naming its root directory `face_similarity_paper_2022`.
+
+# download raw data from https://osf.io/7bh6s/
 ```
-be within face_similarity_paper_2022 folder in MATLAB (tested in MATLAB_R2021a but code should work in earlier versions as well)
+unzip "main" and put it into face_similarity_paper_2022/ExperimentalResults/main
 ```
+```
+unzip "isotropicity" and put it into face_similarity_paper_2022/ExperimentalResults/isotropicity/
+```
+
+# run MATLAB scripts below
+Navigate to the `face_similarity_paper_2022` folder in MATLAB, and run commands below (tested in MATLAB_R2021a but code should work in earlier versions as well).
+
 # to extract data
 ```
 extract_data_similarity
