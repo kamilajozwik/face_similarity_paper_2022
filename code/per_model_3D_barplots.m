@@ -31,9 +31,9 @@ avg_data = mean(similarity_of_face_pair_two_sessions);
 modeldir = 'data/model_predictions_setA/';
 
 % BFM geometry info
-bfm_angle = csvread(strcat(modeldir,'BFM-angle.csv'));
-r1 = csvread(strcat(modeldir,'allpcs_r1.csv'));
-r2 = csvread(strcat(modeldir,'allpcs_r2.csv'));
+bfm_angle = csvread(strcat(modeldir,'angle_radius_geometry/BFM-angle.csv'));
+r1 = csvread(strcat(modeldir,'angle_radius_geometry/allpcs_r1.csv'));
+r2 = csvread(strcat(modeldir,'/angle_radius_geometryallpcs_r2.csv'));
 
 % all other models
 bfm_euc = csvread(strcat(modeldir,'BFM.csv'));
@@ -50,8 +50,9 @@ vgg_bfm = csvread(strcat(modeldir,'VGG-BFM-identity_best_layer.csv'));
 vgg_bfm_latent = csvread(strcat(modeldir,'VGG-BFM-latents_best_layer.csv'));
 vgg_face = csvread(strcat(modeldir,'VGG-Face_best_layer.csv'));
 vgg_obj = csvread(strcat(modeldir,'VGG-Object_best_layer.csv'));
-bfm_person = csvread(strcat(modeldir,'BFM-person-attributes.csv'));
 aam = csvread(strcat(modeldir,'Active_Appearance_Model.csv'));
+
+bfm_person = csvread(strcat(modeldir,'BFM_submodels/BFM-person-attributes.csv'));
 
 % collapse together very tiny geometric values to zero
 bfm_angle(bfm_angle<0.001) = 0; 
