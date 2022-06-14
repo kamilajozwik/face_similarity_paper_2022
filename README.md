@@ -101,10 +101,15 @@ MasterScriptFaceSimilarity
 MasterScriptFaceSimilarityIsotropicity
 %% plot AUC
 ```
+## Figure 4b
+```
+reweight_and_plot_setA (top panel)
+reweight_and_plot_setB (bottom panel)
+```
 ## Figure 4c
 ```
-unique_var_kate_models_all_model_weight_new_way
-unique_var_kate_models_all_model_weight_iso_new_way
+unique_var_kate_models_all_model_weight_new_way (top panel)
+unique_var_kate_models_all_model_weight_iso_new_way (bottom panel)
 ```
 
 # to generate figures in the supplementary materials
