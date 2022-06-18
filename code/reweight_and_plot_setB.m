@@ -11,8 +11,8 @@
 
 clear all
 
-nCV = 20; % can make smaller for debugging. At least 20 for full run.
-nboots = 1000; % can make smaller for debugging. At least 1000 for full run.
+nCV = 30; % can make smaller for debugging. At least 20 for full run.
+nboots = 2000; % can make smaller for debugging. At least 1000 for full run.
 savedir = './analysis/';
 
 %% load human data
