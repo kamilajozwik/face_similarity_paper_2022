@@ -136,6 +136,34 @@ MasterScriptFaceSimilarityIsotropicity
 MasterScriptFaceSimilarity
 %% Isotropicity/uniformity same stimuli test
 ```
+## Supplementary Figures 6, 7, 8, 10b and 11
+To create the top panel in each:
+```
+reweight_and_plot_setA
+```
+After changing the following variable to point to one of the appropriate datasets:
+```
+modeldir = 'data/model_predictions_setA/DNN_layers_VGG-face/' (Supp Fig 6, VGG-Face bars only)
+modeldir = 'data/model_predictions_setA/DNN_layers_VGG-object/' (Supp Fig 6, VGG-Object bars only)
+modeldir = 'data/model_predictions_setA/DNN_layers_VGG-BFM-identity/' (Supp Fig 7)
+modeldir = 'data/model_predictions_setA/DNN_layers_VGG-BFM-latents/' (Supp Fig 8)
+modeldir = 'data/model_predictions_setA/BFM_submodels/' (Supp Fig 10b)
+modeldir = 'data/model_predictions_setA/BFM_num-PCs/' (Supp Fig 11)
+```
+To create the bottom panel in each:
+```
+reweight_and_plot_setB
+```
+After changing the following variable to point to one of the appropriate datasets:
+```
+modeldir = 'data/model_predictions_setB/DNN_layers_VGG-face/' (Supp Fig 6, VGG-Face bars only)
+modeldir = 'data/model_predictions_setB/DNN_layers_VGG-object/' (Supp Fig 6, VGG-Object bars only)
+modeldir = 'data/model_predictions_setB/DNN_layers_VGG-BFM-identity/' (Supp Fig 7)
+modeldir = 'data/model_predictions_setB/DNN_layers_VGG-BFM-latents/' (Supp Fig 8)
+modeldir = 'data/model_predictions_setB/BFM_submodels/' (Supp Fig 10b)
+modeldir = 'data/model_predictions_setB/BFM_num-PCs/' (Supp Fig 11)
+```
+Note: Comment out final cell `%% "Golan wings" to indicate significance on main bar plot` to avoid crowding plot.
 ## Supplementary Figure 10c
 ```
 unique_var_kate_models_all_model_weight_bfm_sub_new_way
