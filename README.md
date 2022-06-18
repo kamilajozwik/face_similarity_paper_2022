@@ -169,3 +169,7 @@ Note: Comment out final cell `%% "Golan wings" to indicate significance on main 
 unique_var_kate_models_all_model_weight_bfm_sub_new_way
 unique_var_kate_models_all_model_weight_bfm_sub_new_way_iso
 ```
+## Supplementary Figure 12
+```
+intermodel_correlations_plot
+```
