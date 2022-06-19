@@ -1,5 +1,5 @@
 
-%% load data
+%% PRELIM: load data
 
 load('data/all_data_combined/all_similarities.mat');
 
@@ -15,7 +15,7 @@ load('data/all_data_combined/all_theta.mat');
 load('data/all_data_combined/all_pair_ids.mat');
 
 
-%% get similarities for face pairs
+%% PRELIM: get similarities for face pairs
 for face_pair = 1:232
     indeces_of_face_pair = all_pair_ids == face_pair;
     
@@ -42,7 +42,7 @@ for subj = 1:26
 end
 [ordered_mean_similarity_of_face_pair, order_similarity] = sort(mean_similarity_of_face_pair);
 
-%% get Euclidean distances for face pairs
+%% PRELIM: get Euclidean distances for face pairs
 for face_pair = 1:232
     indeces_of_face_pair = all_pair_ids == face_pair;
     
@@ -60,7 +60,7 @@ eu_distances_of_face_pair_two_sessions_mean = squeeze(mean(eu_distances_of_face_
 
 save_mat_kmj('analysis/concatenated_two_sessions_subj_repeated_eu_distances.mat', 'concatenated_two_sessions_subj_repeated_eu_distances');
 
-%% get theta for face pairs
+%% PRELIM: get theta for face pairs
 for face_pair = 1:232
     indeces_of_face_pair = all_pair_ids == face_pair;
     
@@ -70,7 +70,7 @@ for face_pair = 1:232
     std_theta_of_face_pair(face_pair) = std(theta_across_two_sessions);
 end
 
-%% get r1 for face pairs
+%% PRELIM: get r1 for face pairs
 for face_pair = 1:232
     indeces_of_face_pair = all_pair_ids == face_pair;
     
@@ -80,7 +80,7 @@ for face_pair = 1:232
     std_r1_of_face_pair(face_pair) = std(r1_across_two_sessions);
 end
 
-%% get r2 for face pairs
+%% PRELIM: get r2 for face pairs
 for face_pair = 1:232
     indeces_of_face_pair = all_pair_ids == face_pair;
     
@@ -90,26 +90,110 @@ for face_pair = 1:232
     std_r2_of_face_pair(face_pair) = std(r2_across_two_sessions);
 end
 
-%% plot linear and sigmoid BFS distance on the data
-close all;
-figure('Name', 'Face similarity as a function of Basel Face Space');
+%% PRELIM: linear and sigmoid BFS distance
 linear_bfs_distance = linear_distance_fit(all_sessions);
 sigmoid_bfs_distance = sigmoid_distance_fit(all_sessions);
-plot(all_eu_distances, all_similarities, 'ro','MarkerSize',2);
-hold on;
-plot_1d(linear_bfs_distance, '', 'b');
-hold on;
-plot_1d(sigmoid_bfs_distance, '', 'k');
-xlabel('BFM Euclidean distance');
-ylabel('Facial dissimilarity judgements');
 
-set(gca,'box', 'off');
-xlim([-0.2 80]);
-xticks(0:10:80)
+%% PRELIM: define mean identity separator and find after how many face pairs it is places sampling every 20 face pairs
 
-ax = gca; ax.XAxis.FontSize = 20; ax.YAxis.FontSize = 20;
+mean_identity_separator = mean(all_separators);
 
-% save_figure_kmj('analysis/linear_and_sigmoidal_model_fit_over_data', figure(1));
+stderror_identity_separator = std(all_separators)/sqrt(26);
+
+index_of_identity_separator = find(ordered_mean_similarity_of_face_pair<mean_identity_separator);
+
+index_of_identity_separator_max = max(index_of_identity_separator);
+
+%% PRELIM: confidence intervals identity separator
+
+SEM = std(all_separators)/sqrt(length(all_separators));% Standard Error
+ts = tinv([0.05  0.95],length(all_separators)-1);      % T-Score
+CI = mean(all_separators) + ts*SEM;                     % 
+
+%% PRELIM: restructure data into pairs per subject
+number_of_subjects = 26;
+
+pairs_thetas = [];
+pairs_eu_distances = [];
+pairs_labels = [];
+pairs_r1 = [];
+pairs_r2 = [];
+
+pair_ids = [];
+
+for s = 1:number_of_subjects
+    
+    subject = all_subjects(s);
+    
+    pair_number = 0;
+    
+    for session = 1:2
+        for trial = 1:29
+            identity_line_position = subject.sessions(session, trial).facePositions(1,2);
+            for pair = 2:9
+                pair_number = pair_number + 1;
+                pair_position = subject.sessions(session, trial).facePositions(pair,2);
+                pair_id = subject.sessions(session, trial).PairOrderAndID(pair-1);
+                geodat = subject.sessions(session, trial).geometricInfo(pair).polarRelations;
+                r1=geodat(1); r2=geodat(2); theta_deg = geodat(3); 
+                 if r1==0 || r2==0
+                    theta_deg = nan;
+                    r1 = nan;
+                    r2 = nan;
+                    eu_d = nan;
+                end
+                eu_d = sqrt(r1^2 + r2^2 - 2*r1*r2*cosd(theta_deg));
+                pair_ids(s, pair_number) = pair_id;
+                pairs_r1(s, pair_number) = r1;
+                pairs_r2(s, pair_number) = r2;
+                pairs_thetas(s, pair_number) = theta_deg;
+                pairs_eu_distances(s, pair_number) = eu_d;
+                if pair_position <= identity_line_position
+                    pairs_labels(s, pair_number) = 1;
+                else
+                    pairs_labels(s, pair_number) = 2;
+                end
+            end
+        end
+    end
+end
+
+%% PRELIM: get pairs below and above identity line
+
+thetas_below_identity_line = pairs_thetas(pairs_labels==1);
+thetas_above_identity_line = pairs_thetas(pairs_labels==2);
+
+eu_distances_below_identity_line = pairs_eu_distances(pairs_labels==1);
+eu_distances_above_identity_line = pairs_eu_distances(pairs_labels==2);
+
+r1_below_identity_line = pairs_r1(pairs_labels==1);
+r1_above_identity_line = pairs_r1(pairs_labels==2);
+r2_below_identity_line = pairs_r2(pairs_labels==1);
+r2_above_identity_line = pairs_r2(pairs_labels==2);
+abs_diff_r1_r2_below_identity_line = abs(r1_below_identity_line - r2_below_identity_line);
+abs_diff_r1_r2_above_identity_line = abs(r1_above_identity_line - r2_above_identity_line);
+
+%% PRELIM: compute dprimes and AUC
+
+do_plot_individual_figs = 0;
+
+dprimes_eu_d= [];
+dprimes_theta = [];
+dprimes_abs_r1_r2 = [];
+AUC_eu_d = [];
+AUC_theta = [];
+AUC_abs_r1_r2 = [];
+
+for s = 1:number_of_subjects
+    [dprimes_eu_d(s), AUC_eu_d(s)] = dprime_and_roc(pairs_eu_distances(s,:)', pairs_labels(s,:)', do_plot_individual_figs);
+    if do_plot_individual_figs; save_figure_kmj(['analysis/AUC/roc_curves/eu_distance/subj' num2str(s,'%02d') '.png']); end
+    [dprimes_theta(s), AUC_theta(s)] = dprime_and_roc(pairs_thetas(s,:)', pairs_labels(s,:)', do_plot_individual_figs);
+    if do_plot_individual_figs; save_figure_kmj(['analysis/AUC/roc_curves/theta/subj' num2str(s,'%02d') '.png']); end
+    [dprimes_abs_r1_r2(s), AUC_abs_r1_r2(s)] = dprime_and_roc(abs(pairs_r1(s,:)-pairs_r2(s,:))', pairs_labels(s,:)', do_plot_individual_figs);
+    if do_plot_individual_figs; save_figure_kmj(['analysis/AUC/roc_curves/absolute_difference/subj' num2str(s,'%02d') '.png']); end
+end
+
+
 
 
 %% Compute mean correlation between subjects across two sessions
@@ -258,22 +342,6 @@ mean_single_subj_corr_with_VGG_face = mean(single_subj_corr_with_VGG_face);
 
 save_mat_kmj('analysis/correlations/pair_ranking_correlations_mean_subject_VGG_face', 'mean_single_subj_corr_with_VGG_face');
 
-%% define mean identity separator and find after how many face pairs it is places sampling every 20 face pairs
-
-mean_identity_separator = mean(all_separators);
-
-stderror_identity_separator = std(all_separators)/sqrt(26);
-
-index_of_identity_separator = find(ordered_mean_similarity_of_face_pair<mean_identity_separator);
-
-index_of_identity_separator_max = max(index_of_identity_separator);
-
-%% confidence intervals identity separator
-
-SEM = std(all_separators)/sqrt(length(all_separators));% Standard Error
-ts = tinv([0.05  0.95],length(all_separators)-1);      % T-Score
-CI = mean(all_separators) + ts*SEM                     % 
-
 %% plot identity separator on data
 close all;
 figure('Name', 'Face similarity as a function of Basel Face Space');
@@ -363,71 +431,7 @@ Y(indeces_mean_similarities_above_identity_line)=2;
 
 [dprime, AUC] = dprime_and_roc(X, Y)
 
-%% logistic regression and dprime (based on individual subjects data)
-number_of_subjects = 26;
 
-dprimes_eu_d= [];
-dprimes_theta = [];
-dprimes_abs_r1_r2 = [];
-AUC_eu_d = [];
-AUC_theta = [];
-AUC_abs_r1_r2 = [];
-
-
-pairs_thetas = [];
-pairs_eu_distances = [];
-pairs_labels = [];
-pairs_r1 = [];
-pairs_r2 = [];
-
-pair_ids = [];
-
-do_plot = 1;
-
-for s = 1:number_of_subjects
-    
-    subject = all_subjects(s);
-    
-    pair_number = 0;
-    
-    for session = 1:2
-        for trial = 1:29
-            identity_line_position = subject.sessions(session, trial).facePositions(1,2);
-            for pair = 2:9
-                pair_number = pair_number + 1;
-                pair_position = subject.sessions(session, trial).facePositions(pair,2);
-                pair_id = subject.sessions(session, trial).PairOrderAndID(pair-1);
-                geodat = subject.sessions(session, trial).geometricInfo(pair).polarRelations;
-                r1=geodat(1); r2=geodat(2); theta_deg = geodat(3); 
-                 if r1==0 || r2==0
-                    theta_deg = nan;
-                    r1 = nan;
-                    r2 = nan;
-                    eu_d = nan;
-                end
-                eu_d = sqrt(r1^2 + r2^2 - 2*r1*r2*cosd(theta_deg));
-                pair_ids(s, pair_number) = pair_id;
-                pairs_r1(s, pair_number) = r1;
-                pairs_r2(s, pair_number) = r2;
-                pairs_thetas(s, pair_number) = theta_deg;
-                pairs_eu_distances(s, pair_number) = eu_d;
-                if pair_position <= identity_line_position
-                    pairs_labels(s, pair_number) = 1;
-                else
-                    pairs_labels(s, pair_number) = 2;
-                end
-            end
-        end
-    end
-    
-    
-    [dprimes_eu_d(s), AUC_eu_d(s)] = dprime_and_roc(pairs_eu_distances(s,:)', pairs_labels(s,:)', do_plot);
-    if do_plot; save_figure_kmj(['analysis/AUC/roc_curves/eu_distance/subj' num2str(s,'%02d') '.png']); end
-    [dprimes_theta(s), AUC_theta(s)] = dprime_and_roc(pairs_thetas(s,:)', pairs_labels(s,:)', do_plot);
-    if do_plot; save_figure_kmj(['analysis/AUC/roc_curves/theta/subj' num2str(s,'%02d') '.png']); end
-    [dprimes_abs_r1_r2(s), AUC_abs_r1_r2(s)] = dprime_and_roc(abs(pairs_r1(s,:)-pairs_r2(s,:))', pairs_labels(s,:)', do_plot);
-    if do_plot; save_figure_kmj(['analysis/AUC/roc_curves/absolute_difference/subj' num2str(s,'%02d') '.png']); end
-end
 
 %% isotropicity across two sessions, same stimulus set
 
@@ -513,7 +517,8 @@ caxis([0 1]);
 colorbar('southoutside');
 save_figure_kmj('analysis/frequency_same_identity/frequency_of_same_identity_every_20_face_pair_colorbar');
 
-%% mean and stderr dprimes
+%% plot dprimes
+
 mean_dprimes_eu_d = nanmean(dprimes_eu_d);
 mean_dprimes_theta = nanmean(dprimes_theta);
 mean_dprimes_abs_r1_r2 = nanmean(dprimes_abs_r1_r2);
@@ -521,17 +526,6 @@ mean_dprimes_abs_r1_r2 = nanmean(dprimes_abs_r1_r2);
 stderr_dprimes_eu_d = (nanstd(dprimes_eu_d))/number_of_subjects;
 stderr_dprimes_theta = (nanstd(dprimes_theta))/number_of_subjects;
 stderr_dprimes_abs_r1_r2 = (nanstd(dprimes_abs_r1_r2))/number_of_subjects;
-
-%% mean and stderr auc
-mean_AUC_eu_d = nanmean(AUC_eu_d);
-mean_AUCs_theta = nanmean(AUC_theta);
-mean_AUC_abs_r1_r2 = nanmean(AUC_abs_r1_r2);
-
-stderr_AUC_eu_d = (nanstd(AUC_eu_d))/number_of_subjects;
-stderr_AUC_theta = (nanstd(AUC_theta))/number_of_subjects;
-stderr_AUC_abs_r1_r2 = (nanstd(AUC_abs_r1_r2))/number_of_subjects;
-
-%% plot dprimes
 
 close all;
 figure;
@@ -569,6 +563,14 @@ save_figure_kmj('analysis/dprimes/dprimes', figure(1));
 
 %% plot AUC
 
+mean_AUC_eu_d = nanmean(AUC_eu_d);
+mean_AUCs_theta = nanmean(AUC_theta);
+mean_AUC_abs_r1_r2 = nanmean(AUC_abs_r1_r2);
+
+stderr_AUC_eu_d = (nanstd(AUC_eu_d))/number_of_subjects;
+stderr_AUC_theta = (nanstd(AUC_theta))/number_of_subjects;
+stderr_AUC_abs_r1_r2 = (nanstd(AUC_abs_r1_r2))/number_of_subjects;
+
 close all;
 figure;
 
@@ -603,20 +605,6 @@ ax = gca; ax.XAxis.FontSize = 25; ax.YAxis.FontSize = 25;
 
 save_figure_kmj('analysis/AUC/AUC', figure(1));
 
-%% get pairs below and above identity line
-
-thetas_below_identity_line = pairs_thetas(pairs_labels==1);
-thetas_above_identity_line = pairs_thetas(pairs_labels==2);
-
-eu_distances_below_identity_line = pairs_eu_distances(pairs_labels==1);
-eu_distances_above_identity_line = pairs_eu_distances(pairs_labels==2);
-
-r1_below_identity_line = pairs_r1(pairs_labels==1);
-r1_above_identity_line = pairs_r1(pairs_labels==2);
-r2_below_identity_line = pairs_r2(pairs_labels==1);
-r2_above_identity_line = pairs_r2(pairs_labels==2);
-abs_diff_r1_r2_below_identity_line = abs(r1_below_identity_line - r2_below_identity_line);
-abs_diff_r1_r2_above_identity_line = abs(r1_above_identity_line - r2_above_identity_line);
 
 %% plot histogram for MEAN theta below and above identity line
 close all;
@@ -689,7 +677,7 @@ save_figure_kmj('analysis/histograms/hist_same_differnt_identity_abs_difference_
 %% plot histogram for MEAN eu dist below and above identity line
 close all;
 figure;
-% bins = 6;
+bins = 6;
 colour_above_identity_line = [180/255,180/255,180/255];
 colour_below_identity_line = [100/255,100/255,100/255];
 
@@ -920,9 +908,6 @@ mean_eu_dist = sigmoid_bfs_distance_inv(mean(all_separators));
 
 CI_eu = sigmoid_bfs_distance_inv(CI);
 
-%% linear and sigmoid BFS distance
-linear_bfs_distance = linear_distance_fit(all_sessions);
-sigmoid_bfs_distance = sigmoid_distance_fit(all_sessions);
 %% plot linear and sigmoid BFS distance on the data
 close all;
 figure('Name', 'Face similarity as a function of Basel Face Space');
@@ -1124,8 +1109,8 @@ across_stimuli = zeros(length(all_subjects), length(models));
 % the same at every run
 seed = RandStream('mt19937ar','Seed',0);
 
-do_plot = 0;
-if do_plot
+do_plot_individual_figs = 0;
+if do_plot_individual_figs
     figure;
 end
     
@@ -1140,7 +1125,7 @@ for s = 1:length(all_subjects)
         half1 = subject.sessions(1,:);
         half2 = subject.sessions(2,:);
         
-        accuracy1 = prediction_accuracy(half1, half2, model, do_plot);
+        accuracy1 = prediction_accuracy(half1, half2, model, do_plot_individual_figs);
         accuracy2 = prediction_accuracy(half2, half1, model);
         across_sessions(s, m) = mean([accuracy1, accuracy2]);
     end
