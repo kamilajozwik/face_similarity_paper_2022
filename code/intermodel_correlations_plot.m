@@ -29,6 +29,7 @@ end
 
 %% 
 
+figure;
 RSM = squareform(pdist(allmodels,'correlation'));
 imagesc(RSM)
 axis square
