@@ -1,5 +1,5 @@
 
-%% load data iso
+%% PRELIM: load data iso
 
 load('data/all_data_combined/all_similarities_iso.mat');
 
@@ -13,7 +13,7 @@ load('data/all_data_combined/all_separators_iso.mat');
 load('data/all_data_combined/all_theta_iso.mat');
 load('data/all_data_combined/all_pair_ids_iso.mat');
 
-%% load data non_iso
+%% PRELIM: load data non_iso
 
 load('data/all_data_combined/all_subjects.mat');
 load('data/all_data_combined/all_pair_ids.mat');
@@ -32,7 +32,7 @@ all_eu_no_iso = all_eu_distances;
 all_similarities_no_iso = all_similarities;
 all_separators_no_iso = all_separators;
 
-%% get similarities for face pairs
+%% PRELIM: get similarities for face pairs
 
 for face_pair = 1:232
     indeces_of_face_pair_iso = all_pair_ids_iso == face_pair;
@@ -52,7 +52,7 @@ for subj = 1:15
 end
 [ordered_mean_similarity_of_face_pair, order_similarity] = sort(mean_similarity_of_face_pair_iso);
 
-%% get eu distances for face pairs
+%% PRELIM: get eu distances for face pairs
 
 for face_pair = 1:232
     indeces_of_face_pair_iso = all_pair_ids_iso == face_pair;
@@ -64,7 +64,7 @@ end
 
 save_mat_kmj('analysis/mean_eu_distances_of_face_pair_iso.mat', 'mean_eu_distances_of_face_pair_iso');
 
-%% get theta for face pairs
+%% PRELIM: get theta for face pairs
 for face_pair = 1:232
     indeces_of_face_pair_iso = all_pair_ids_iso == face_pair;
     
@@ -74,7 +74,7 @@ for face_pair = 1:232
    
 end
 
-%% get r1 for face pairs
+%% PRELIM: get r1 for face pairs
 for face_pair = 1:232
     indeces_of_face_pair_iso = all_pair_ids_iso == face_pair;
     
@@ -84,7 +84,7 @@ for face_pair = 1:232
     
 end
 
-%% get r2 for face pairs
+%% PRELIM: get r2 for face pairs
 for face_pair = 1:232
     indeces_of_face_pair_iso = all_pair_ids_iso == face_pair;
     
@@ -95,18 +95,180 @@ for face_pair = 1:232
 end
 
 
-%% Compute mean correlation between subjects across participants
+%% PRELIM: Compute mean correlation between subjects across participants
 similarity_of_face_pair_corr_pairwise_across_subjects_iso = corr(similarity_of_face_pair_iso');
 mean_similarity_of_face_pair_corr_iso = mean(similarity_of_face_pair_corr_pairwise_across_subjects_iso(:));
 
 
-%% get necessary data
+%% PRELIM: get necessary data
 file_folder_kate = 'data/from_kate/facepair_info_144px_isotropicity_expt_pairs_png';
 number_of_face_pairs = 232;
 filenames_similarity = {};
 for i = 1: length(order_similarity)
     filenames_similarity{i} = [file_folder_kate,'/pair_' num2str(order_similarity(i),'%03.f') '.png'];
 end
+
+
+%% PRELIM: define mean identity separator and find after how many face pairs it is places sampling every 20 face pairs
+
+mean_identity_separator_iso = mean(all_separators_iso);
+
+stderror_identity_separator_iso = std(all_separators_iso)/sqrt(15);
+
+index_of_identity_separator = find(ordered_mean_similarity_of_face_pair<mean_identity_separator_iso);
+
+index_of_identity_separator_max = max(index_of_identity_separator);
+
+
+%% PRELIM: get thetas, r1, r2 for faces below average idnetity line
+[indeces_all_similarities_iso_below_identity_line]=find(all_similarities_iso<mean_identity_separator_iso);
+
+all_similarities_iso_below_identity_line = all_similarities_iso(indeces_all_similarities_iso_below_identity_line);
+
+all_theta_iso_below_identity_line = all_theta_iso(indeces_all_similarities_iso_below_identity_line);
+
+all_r1_iso_below_identity_line = all_r1_iso(indeces_all_similarities_iso_below_identity_line);
+
+all_r2_iso_below_identity_line = all_r2_iso(indeces_all_similarities_iso_below_identity_line);
+
+%% PRELIM: get MEAN Eu dist, thetas, r1, r2 for faces below average idnetity line
+
+[indeces_mean_similarities_above_identity_line_iso]=find(mean_similarity_of_face_pair_iso>mean_identity_separator_iso);
+
+[indeces_mean_similarities_below_identity_line_iso]=find(mean_similarity_of_face_pair_iso<mean_identity_separator_iso);
+
+mean_theta_below_identity_line_iso = mean_theta_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
+
+mean_r1_below_identity_line_iso = mean_r1_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
+
+mean_r2_below_identity_line_iso = mean_r2_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
+ 
+mean_eu_dist_below_identity_line_iso = mean_eu_distances_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
+
+mean_similarities_below_identity_line_iso = mean_similarity_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
+
+mean_similarities_above_identity_line_iso = mean_similarity_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
+
+mean_theta_above_identity_line_iso = mean_theta_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
+
+mean_r1_above_identity_line_iso = mean_r1_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
+
+mean_r2_above_identity_line_iso = mean_r2_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
+
+mean_eu_dist_above_identity_line_iso = mean_eu_distances_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
+
+mean_mean_r1_r2_above_identity_line_iso = (mean_r1_above_identity_line_iso+mean_r2_above_identity_line_iso)/2;
+
+mean_mean_r1_r2_below_identity_line_iso = (mean_r1_below_identity_line_iso+mean_r2_below_identity_line_iso)/2;
+
+abs_difference_r1_r2_above_identity_line_iso = abs(mean_r1_above_identity_line_iso-mean_r2_above_identity_line_iso);
+
+abs_difference_r1_r2_below_identity_line_iso = abs(mean_r1_below_identity_line_iso-mean_r2_below_identity_line_iso);
+
+
+%% PRELIM: logistic regression and dprime (based on individual subjects data)
+
+number_of_subjects_iso = 15;
+
+dprimes_eu_d_iso= [];
+dprimes_theta_iso = [];
+dprimes_abs_r1_r2_iso = [];
+AUC_eu_d_iso = [];
+AUC_theta_iso = [];
+AUC_abs_r1_r2_iso = [];
+
+
+pairs_thetas_iso = [];
+pairs_eu_distances_iso = [];
+pairs_labels_iso = [];
+pairs_r1_iso = [];
+pairs_r2_iso = [];
+
+pair_ids_iso = [];
+
+for s = 1:number_of_subjects_iso
+    
+    subject = all_subjects_iso(s);
+    
+    pair_number = 0;
+    
+    for session = 1:1
+        for trial = 1:29
+            identity_line_position = subject.sessions(session, trial).facePositions(1,2);
+            for pair = 2:9
+                pair_number = pair_number + 1;
+                pair_position = subject.sessions(session, trial).facePositions(pair,2);
+                pair_id = subject.sessions(session, trial).PairOrderAndID(pair-1);
+                geodat = subject.sessions(session, trial).geometricInfo(pair).polarRelations;
+                r1_iso=geodat(1); r2_iso=geodat(2); theta_deg_iso = geodat(3); 
+                if r1_iso==0 || r2_iso==0
+                    theta_deg_iso = nan;
+                    r1_iso = nan;
+                    r2_iso = nan;
+                    eu_d_iso = nan;
+                end
+                eu_d_iso = sqrt(r1_iso^2 + r2_iso^2 - 2*r1_iso*r2_iso*cosd(theta_deg_iso));
+                pair_ids_iso(s, pair_number) = pair_id;
+                pairs_r1_iso(s, pair_number) = r1_iso;
+                pairs_r2_iso(s, pair_number) = r2_iso;
+                pairs_thetas_iso(s, pair_number) = theta_deg_iso;
+                pairs_eu_distances_iso(s, pair_number) = eu_d_iso;
+                if pair_position <= identity_line_position
+                    pairs_labels_iso(s, pair_number) = 1;
+                else
+                    pairs_labels_iso(s, pair_number) = 2;
+                end
+            end
+        end
+    end
+    
+    [dprimes_eu_d_iso(s), AUC_eu_d_iso(s)] = dprime_and_roc(pairs_eu_distances_iso(s,:)', pairs_labels_iso(s,:)');
+    [dprimes_theta_iso(s), AUC_theta_iso(s)] = dprime_and_roc(pairs_thetas_iso(s,:)', pairs_labels_iso(s,:)');
+    [dprimes_abs_r1_r2_iso(s), AUC_abs_r1_r2_iso(s)] = dprime_and_roc(abs(pairs_r1_iso(s,:)-pairs_r2_iso(s,:))', pairs_labels_iso(s,:)');
+end
+
+indeces_theta_180_iso = find(all_theta_iso ==180 & all_r1_iso ==0 | all_r2_iso ==0);
+%% PRELIM: count what is the percentage of faces classified as the same identity per face pair
+
+% sort
+n_pairs = length(order_similarity);
+reordered_pairs_labels_iso = [];
+for s = 1:number_of_subjects_iso
+    for p = 1:n_pairs
+        pair_id = order_similarity(p);
+        index_of_pair_in_sess_1 = find(pair_ids_iso(s,:) == pair_id);
+        pair_number = (session-1)*n_pairs + p;
+        reordered_pairs_labels_iso(s, pair_number) = pairs_labels_iso(s, index_of_pair_in_sess_1);
+    end
+end
+
+frequency_pairs_below_identity_line  = sum(reordered_pairs_labels_iso == 1);
+
+frequency_pairs_below_identity_line_both_sess_norm = frequency_pairs_below_identity_line  /15;
+
+frequency_every_20  = frequency_pairs_below_identity_line_both_sess_norm(1:20:end);
+
+%% PRELIM: linear and sigmoid BFS distance
+linear_bfs_distance = linear_distance_fit(all_sessions_iso);
+sigmoid_bfs_distance = sigmoid_distance_fit(all_sessions_iso);
+
+%% PRELIM: get pairs below and above identity line
+
+thetas_below_identity_line_iso = pairs_thetas_iso(pairs_labels_iso==1);
+thetas_above_identity_line_iso = pairs_thetas_iso(pairs_labels_iso==2);
+
+eu_distances_below_identity_line_iso = pairs_eu_distances_iso(pairs_labels_iso==1);
+eu_distances_above_identity_line_iso = pairs_eu_distances_iso(pairs_labels_iso==2);
+
+r1_below_identity_line_iso = pairs_r1_iso(pairs_labels_iso==1);
+r1_above_identity_line_iso = pairs_r1_iso(pairs_labels_iso==2);
+r2_below_identity_line_iso = pairs_r2_iso(pairs_labels_iso==1);
+r2_above_identity_line_iso = pairs_r2_iso(pairs_labels_iso==2);
+abs_diff_r1_r2_below_identity_line_iso = abs(r1_below_identity_line_iso - r2_below_identity_line_iso);
+abs_diff_r1_r2_above_identity_line_iso = abs(r1_above_identity_line_iso - r2_above_identity_line_iso);
+
+
+
 %% arrange face pairs in one big montage
 figure;
 montage(filenames_similarity(1:(number_of_face_pairs)), 'Size', [24,10]);
@@ -241,61 +403,6 @@ mean_single_subj_corr_with_VGG_face = mean(single_subj_corr_with_VGG_face);
 
 save_mat_kmj('analysis/correlations/pair_ranking_correlations_mean_subject_VGG_face_iso', 'mean_single_subj_corr_with_VGG_face');
 
-%% define mean identity separator and find after how many face pairs it is places sampling every 20 face pairs
-
-mean_identity_separator_iso = mean(all_separators_iso);
-
-stderror_identity_separator_iso = std(all_separators_iso)/sqrt(15);
-
-index_of_identity_separator = find(ordered_mean_similarity_of_face_pair<mean_identity_separator_iso);
-
-index_of_identity_separator_max = max(index_of_identity_separator);
-
-
-%% get thetas, r1, r2 for faces below average idnetity line
-[indeces_all_similarities_iso_below_identity_line]=find(all_similarities_iso<mean_identity_separator_iso)
-
-all_similarities_iso_below_identity_line = all_similarities_iso(indeces_all_similarities_iso_below_identity_line);
-
-all_theta_iso_below_identity_line = all_theta_iso(indeces_all_similarities_iso_below_identity_line);
-
-all_r1_iso_below_identity_line = all_r1_iso(indeces_all_similarities_iso_below_identity_line);
-
-all_r2_iso_below_identity_line = all_r2_iso(indeces_all_similarities_iso_below_identity_line);
-
-%% get MEAN thetas for faces below average idnetity line%% get MEAN Eu dist, thetas, r1, r2 for faces below average idnetity line[indeces_mean_similarities_below_identity_line_iso]=find(mean_similarity_of_face_pair_iso<mean_identity_separator_iso)
-
-[indeces_mean_similarities_above_identity_line_iso]=find(mean_similarity_of_face_pair_iso>mean_identity_separator_iso)
-
-[indeces_mean_similarities_below_identity_line_iso]=find(mean_similarity_of_face_pair_iso<mean_identity_separator_iso)
-
-mean_theta_below_identity_line_iso = mean_theta_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
-
-mean_r1_below_identity_line_iso = mean_r1_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
-
-mean_r2_below_identity_line_iso = mean_r2_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
- 
-mean_eu_dist_below_identity_line_iso = mean_eu_distances_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
-
-mean_similarities_below_identity_line_iso = mean_similarity_of_face_pair_iso(indeces_mean_similarities_below_identity_line_iso);
-
-mean_similarities_above_identity_line_iso = mean_similarity_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
-
-mean_theta_above_identity_line_iso = mean_theta_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
-
-mean_r1_above_identity_line_iso = mean_r1_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
-
-mean_r2_above_identity_line_iso = mean_r2_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
-
-mean_eu_dist_above_identity_line_iso = mean_eu_distances_of_face_pair_iso(indeces_mean_similarities_above_identity_line_iso);
-
-mean_mean_r1_r2_above_identity_line_iso = (mean_r1_above_identity_line_iso+mean_r2_above_identity_line_iso)/2;
-
-mean_mean_r1_r2_below_identity_line_iso = (mean_r1_below_identity_line_iso+mean_r2_below_identity_line_iso)/2;
-
-abs_difference_r1_r2_above_identity_line_iso = abs(mean_r1_above_identity_line_iso-mean_r2_above_identity_line_iso);
-
-abs_difference_r1_r2_below_identity_line_iso = abs(mean_r1_below_identity_line_iso-mean_r2_below_identity_line_iso);
 %% logistic regression and dprime (based on mean data)
 
 % create input to logistic regression
@@ -307,88 +414,6 @@ Y_iso(indeces_mean_similarities_above_identity_line_iso)=2;
 
 [dprime_iso, AU_isoC] = dprime_and_roc(X_iso, Y_iso)
 
-%% logistic regression and dprime (based on individual subjects data)
-
-number_of_subjects_iso = 15;
-
-dprimes_eu_d_iso= [];
-dprimes_theta_iso = [];
-dprimes_abs_r1_r2_iso = [];
-AUC_eu_d_iso = [];
-AUC_theta_iso = [];
-AUC_abs_r1_r2_iso = [];
-
-
-pairs_thetas_iso = [];
-pairs_eu_distances_iso = [];
-pairs_labels_iso = [];
-pairs_r1_iso = [];
-pairs_r2_iso = [];
-
-pair_ids_iso = [];
-
-for s = 1:number_of_subjects_iso
-    
-    subject = all_subjects_iso(s);
-    
-    pair_number = 0;
-    
-    for session = 1:1
-        for trial = 1:29
-            identity_line_position = subject.sessions(session, trial).facePositions(1,2);
-            for pair = 2:9
-                pair_number = pair_number + 1;
-                pair_position = subject.sessions(session, trial).facePositions(pair,2);
-                pair_id = subject.sessions(session, trial).PairOrderAndID(pair-1);
-                geodat = subject.sessions(session, trial).geometricInfo(pair).polarRelations;
-                r1_iso=geodat(1); r2_iso=geodat(2); theta_deg_iso = geodat(3); 
-                if r1_iso==0 || r2_iso==0
-                    theta_deg_iso = nan;
-                    r1_iso = nan;
-                    r2_iso = nan;
-                    eu_d_iso = nan;
-                end
-                eu_d_iso = sqrt(r1_iso^2 + r2_iso^2 - 2*r1_iso*r2_iso*cosd(theta_deg_iso));
-                pair_ids_iso(s, pair_number) = pair_id;
-                pairs_r1_iso(s, pair_number) = r1_iso;
-                pairs_r2_iso(s, pair_number) = r2_iso;
-                pairs_thetas_iso(s, pair_number) = theta_deg_iso;
-                pairs_eu_distances_iso(s, pair_number) = eu_d_iso;
-                if pair_position <= identity_line_position
-                    pairs_labels_iso(s, pair_number) = 1;
-                else
-                    pairs_labels_iso(s, pair_number) = 2;
-                end
-            end
-        end
-    end
-    
-    [dprimes_eu_d_iso(s), AUC_eu_d_iso(s)] = dprime_and_roc(pairs_eu_distances_iso(s,:)', pairs_labels_iso(s,:)');
-    [dprimes_theta_iso(s), AUC_theta_iso(s)] = dprime_and_roc(pairs_thetas_iso(s,:)', pairs_labels_iso(s,:)');
-    [dprimes_abs_r1_r2_iso(s), AUC_abs_r1_r2_iso(s)] = dprime_and_roc(abs(pairs_r1_iso(s,:)-pairs_r2_iso(s,:))', pairs_labels_iso(s,:)');
-end
-
-indeces_theta_180_iso = find(all_theta_iso ==180 & all_r1_iso ==0 | all_r2_iso ==0)
-%% count what is the percentage of faces classified as the same identity per face pair
-
-% sort
-n_pairs = length(order_similarity);
-reordered_pairs_labels_iso = [];
-for s = 1:number_of_subjects_iso
-    for p = 1:n_pairs
-        pair_id = order_similarity(p);
-        index_of_pair_in_sess_1 = find(pair_ids_iso(s,:) == pair_id);
-        pair_number = (session-1)*n_pairs + p;
-        reordered_pairs_labels_iso(s, pair_number) = pairs_labels_iso(s, index_of_pair_in_sess_1);
-    end
-end
-
-frequency_pairs_below_identity_line  = sum(reordered_pairs_labels_iso == 1);
-
-frequency_pairs_below_identity_line_both_sess_norm = frequency_pairs_below_identity_line  /15;
-
-frequency_every_20  = frequency_pairs_below_identity_line_both_sess_norm(1:20:end);
-
 %% plot colorbar of frequency every 20 pair
 figure;
 colormap(gray(256));
@@ -398,7 +423,8 @@ caxis([0 1]);
 colorbar('southoutside');
 save_figure_kmj('analysis/frequency_same_identity/frequency_of_same_identity_iso_every_20_face_pair_colorbar');
 
-%% mean and stderr dprimes
+%% plot dprimes
+
 mean_dprimes_eu_d_iso = nanmean(dprimes_eu_d_iso);
 mean_dprimes_theta_iso = nanmean(dprimes_theta_iso);
 mean_dprimes_abs_r1_r2_iso = nanmean(dprimes_abs_r1_r2_iso);
@@ -406,17 +432,6 @@ mean_dprimes_abs_r1_r2_iso = nanmean(dprimes_abs_r1_r2_iso);
 stderr_dprimes_eu_d_iso = (nanstd(dprimes_eu_d_iso))/number_of_subjects_iso;
 stderr_dprimes_theta_iso = (nanstd(dprimes_theta_iso))/number_of_subjects_iso;
 stderr_dprimes_abs_r1_r2_iso = (nanstd(dprimes_abs_r1_r2_iso))/number_of_subjects_iso;
-
-%% mean and stderr auc
-mean_AUC_eu_d_iso = nanmean(AUC_eu_d_iso);
-mean_AUCs_theta_iso = nanmean(AUC_theta_iso);
-mean_AUC_abs_r1_r2_iso = nanmean(AUC_abs_r1_r2_iso);
-
-stderr_AUC_eu_d_iso = (nanstd(AUC_eu_d_iso))/number_of_subjects_iso;
-stderr_AUC_theta_iso = (nanstd(AUC_theta_iso))/number_of_subjects_iso;
-stderr_AUC_abs_r1_r2_iso = (nanstd(AUC_abs_r1_r2_iso))/number_of_subjects_iso;
-
-%% plot dprimes
 
 close all;
 figure;
@@ -454,6 +469,14 @@ save_figure_kmj('analysis/dprimes/dprimes_iso', figure(1));
 
 %% plot AUC
 
+mean_AUC_eu_d_iso = nanmean(AUC_eu_d_iso);
+mean_AUCs_theta_iso = nanmean(AUC_theta_iso);
+mean_AUC_abs_r1_r2_iso = nanmean(AUC_abs_r1_r2_iso);
+
+stderr_AUC_eu_d_iso = (nanstd(AUC_eu_d_iso))/number_of_subjects_iso;
+stderr_AUC_theta_iso = (nanstd(AUC_theta_iso))/number_of_subjects_iso;
+stderr_AUC_abs_r1_r2_iso = (nanstd(AUC_abs_r1_r2_iso))/number_of_subjects_iso;
+
 close all;
 figure;
 
@@ -489,21 +512,6 @@ set(gca,'box', 'off');
 
 
 save_figure_kmj('analysis/AUC/AUC_iso', figure(1));
-
-%% get pairs below and above identity line
-
-thetas_below_identity_line_iso = pairs_thetas_iso(pairs_labels_iso==1);
-thetas_above_identity_line_iso = pairs_thetas_iso(pairs_labels_iso==2);
-
-eu_distances_below_identity_line_iso = pairs_eu_distances_iso(pairs_labels_iso==1);
-eu_distances_above_identity_line_iso = pairs_eu_distances_iso(pairs_labels_iso==2);
-
-r1_below_identity_line_iso = pairs_r1_iso(pairs_labels_iso==1);
-r1_above_identity_line_iso = pairs_r1_iso(pairs_labels_iso==2);
-r2_below_identity_line_iso = pairs_r2_iso(pairs_labels_iso==1);
-r2_above_identity_line_iso = pairs_r2_iso(pairs_labels_iso==2);
-abs_diff_r1_r2_below_identity_line_iso = abs(r1_below_identity_line_iso - r2_below_identity_line_iso);
-abs_diff_r1_r2_above_identity_line_iso = abs(r1_above_identity_line_iso - r2_above_identity_line_iso);
 
 %% plot histogram for MEAN theta below and above identity line
 close all;
@@ -729,9 +737,6 @@ identity_separator_mean_iso = mean_identity_separator_iso;
 identity_separator_all_subj_iso = all_separators_iso;
 [h,p,ci,stats] = ttest2(identity_separator_all_subj,identity_separator_all_subj_iso)
 
-%% linear and sigmoid BFS distance
-linear_bfs_distance = linear_distance_fit(all_sessions_iso);
-sigmoid_bfs_distance = sigmoid_distance_fit(all_sessions_iso);
 
 %% plot linear and sigmoid BFS distance on the data
 close all;
@@ -776,7 +781,7 @@ save_figure_kmj('analysis/linear_and_sigmoidal_model_fit_over_mean_data_iso', fi
 
 close all;
 figure;
-mean_identity_separator_iso_repeated = repelem(mean_identity_separator_iso, length(all_eu_distances_iso))
+mean_identity_separator_iso_repeated = repelem(mean_identity_separator_iso, length(all_eu_distances_iso));
 % line([0 80], [mean_identity_separator_iso mean_identity_separator_iso]); 
 % hold on;
 % line([0 80], [mean_identity_separator_iso+stderror_identity_separator_iso mean_identity_separator_iso+stderror_identity_separator_iso]);
