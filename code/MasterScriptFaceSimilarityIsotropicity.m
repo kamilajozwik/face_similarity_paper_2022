@@ -269,12 +269,6 @@ abs_diff_r1_r2_above_identity_line_iso = abs(r1_above_identity_line_iso - r2_abo
 
 
 
-%% arrange face pairs in one big montage
-figure;
-montage(filenames_similarity(1:(number_of_face_pairs)), 'Size', [24,10]);
-
-save_figure_kmj('analysis/montage_similarity_iso');
-
 %% arrange face pairs in montage showing every 20 face pairs for similarity judgements
 figure;
 montage(filenames_similarity(1:20:number_of_face_pairs), 'Size', [12,1]);
