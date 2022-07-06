@@ -11,7 +11,7 @@ models_dissimilarities_raw = nan(232,number_of_models);
 
 for i = 1: length(model_names_for_read_csv)
     
-    model = csvread(['data/model_predictions_revision/isotropicity_expt/BFM_submodels/' model_names_for_read_csv{i} '.csv']);
+    model = csvread(['data/model_predictions_setB/BFM_submodels/' model_names_for_read_csv{i} '.csv']);
     
     % added normalisation by subtracting mean and dividing by std as model
     % dissilimilarity values were in very different ranges

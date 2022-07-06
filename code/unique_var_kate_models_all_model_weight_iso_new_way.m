@@ -1,5 +1,5 @@
 %% load models 
-model_names_for_read_csv = {'VGG-Face_best_layer', 'AAM', 'VGG-BFM-identity_best_layer','VGG-BFM-latents_best_layer', 'Alexnet_best_layer', 'VGG-Object_best_layer', 'GIST',  'BFM', 'HMAX_best_layer', 'eigenface', 'Pixel', 'Configural_0th', '3D_mesh', 'Configural_1st', 'BFM-angle', 'Configural_2nd'};
+model_names_for_read_csv = {'VGG-Face_best_layer', 'Active_Appearance_Model', 'VGG-BFM-identity_best_layer','VGG-BFM-latents_best_layer', 'Alexnet_best_layer', 'VGG-Object_best_layer', 'GIST',  'BFM', 'HMAX_best_layer', 'Eigenface', 'Pixel', 'Configural_0th', '3D_mesh', 'Configural_1st', 'BFM-angle', 'Configural_2nd'};
 % fot plotting
 model_names = {'VGG-Face best layer', 'Active Appearance Model', 'VGG-BFM-identity best layer','VGG-BFM-latents best layer', 'Alexnet best layer', 'VGG-Object best layer', 'GIST', 'BFM','HMAX best layer', 'Eigenface',  'Pixel',    'Configural 0th',  '3D mesh', 'Configural 1st', 'BFM-angle', 'Configural 2nd'}; 
 
@@ -11,7 +11,7 @@ models_dissimilarities_raw = nan(232,number_of_models);
 
 for i = 1: length(model_names)
     
-    model = csvread(['data/model_predictions_revision/isotropicity_expt/' model_names_for_read_csv{i} '.csv']);
+    model = csvread(['data/model_predictions_setB/' model_names_for_read_csv{i} '.csv']);
     
     % added normalisation by subtracting mean and dividing by std as model
     % dissilimilarity values were in very different ranges
