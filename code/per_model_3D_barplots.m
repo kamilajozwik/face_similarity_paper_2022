@@ -33,7 +33,7 @@ modeldir = 'data/model_predictions_setA/';
 % BFM geometry info
 bfm_angle = csvread(strcat(modeldir,'angle_radius_geometry/BFM-angle.csv'));
 r1 = csvread(strcat(modeldir,'angle_radius_geometry/allpcs_r1.csv'));
-r2 = csvread(strcat(modeldir,'/angle_radius_geometryallpcs_r2.csv'));
+r2 = csvread(strcat(modeldir,'angle_radius_geometry/allpcs_r2.csv'));
 
 % all other models
 bfm_euc = csvread(strcat(modeldir,'BFM.csv'));
