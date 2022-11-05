@@ -4,7 +4,10 @@
 clear all
 
 info_file = 'facepair_info_set_A.mat';
-save_dir = strcat(pwd,'\facepair_images_set_A\');
+
+% need to create folder for images to be saved to:
+save_dir = strcat(pwd,'\facepair_images_set_A\'); 
+
 % following directory should be wherever BFM is installed,
 % which can be downloaded from here: 
 % https://faces.dmi.unibas.ch/bfm/index.php?nav=1-2&id=downloads
