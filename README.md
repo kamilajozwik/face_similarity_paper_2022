@@ -28,6 +28,9 @@ unzip "model_predictions_setB" and put it into face_similarity_paper_2022/data/m
 # run MATLAB scripts below
 Navigate to the `face_similarity_paper_2022` folder in MATLAB, add this and its subfolders to the Matlab search path, and run commands below (tested in MATLAB_R2019b and MATLAB_R2021a but code should work in earlier versions as well).
 
+# to render face images (nb. not necessary to recreate data analysis)
+Run script `face_similarity_paper_2022/code/render_face_images/render_face_pairs.m` with preferred image size.
+
 # to format raw data for analysis
 ```
 extract_data_similarity
